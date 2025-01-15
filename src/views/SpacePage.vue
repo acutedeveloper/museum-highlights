@@ -6,6 +6,12 @@
     </h1>
 
     <!-- Add the museum highlight cards based on the data provided below -->
+    <div class="space-page__highlights-grid">
+      <MuseumHighlight v-for="highlight in spaceHighlights"
+                       :key="highlight.id"
+                       :highlightData="highlight"
+      />
+    </div>
 
   </div>
 </template>
@@ -19,11 +25,8 @@ export default {
   components: {
     MuseumHighlight,
   },
-  mixins: [
-  ],
-  props: {
-
-  },
+  mixins: [],
+  props: {},
   data() {
     return {
       spaceHighlights: [
@@ -62,6 +65,7 @@ export default {
           news: {
             title: 'The Lyrids will peak at on April 21-22 2021, at night',
           },
+          species: 'hippotomus'
         },
       ],
       spacePartners: {
@@ -75,11 +79,9 @@ export default {
     };
   },
   computed: {
-
+    // Merge data and partners API
   },
-  methods: {
-
-  },
+  methods: {},
   created() {
 
   },
@@ -88,10 +90,23 @@ export default {
 
 <style lang="scss" scoped>
 .space-page {
+
+  padding: 1rem;
+
   &__title {
     color: #2c3791;
     font-size: 24px;
     font-weight: 600;
+  }
+
+  &__highlights-grid {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: 1fr 1fr;
+
+    @media (min-width: 768px) {
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+    }
   }
 }
 </style>
