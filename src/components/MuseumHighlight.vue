@@ -1,8 +1,17 @@
 <template>
   <div class="museum-highlight">
     <!-- Display the available information for the highlight -->
+    <div class="museum-highlight__icon"></div>
+
     <div class="museum-highlight__image-wrapper">
-      <img class="museum-highlight__image" src="https://picsum.photos/seed/picsum/600/500" alt="Image"/>
+      <button class="museum-highlight__refresh-image-button" @click="refreshImage">Refresh image</button>
+      <img ref="highlightImage" class="museum-highlight__highlight-image" src="https://picsum.photos/seed/picsum/600/500" alt="Image"/>
+      <svg class="museum-highlight__spinner" width="48" height="48" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,19a8,8,0,1,1,8-8A8,8,0,0,1,12,20Z" opacity=".25"/>
+        <path
+            d="M12,4a8,8,0,0,1,7.89,6.7A1.53,1.53,0,0,0,21.38,12h0a1.5,1.5,0,0,0,1.48-1.75,11,11,0,0,0-21.72,0A1.5,1.5,0,0,0,2.62,12h0a1.53,1.53,0,0,0,1.49-1.3A8,8,0,0,1,12,4Z"
+            class="svg-spinner"/>
+      </svg>
     </div>
     <div class="museum-highlight__content">
       <h2>{{ name }}</h2>
@@ -31,7 +40,8 @@ export default {
   components: {},
   mixins: [],
   props: {
-    highlightData: Object
+    highlightData: Object,
+    highlightIcon: String
   },
   data() {
     return {};
@@ -53,7 +63,7 @@ export default {
       return this.highlightData.quiz || '';
     },
     metadata() {
-      // We are going to delete each key from the main data array to create our metadata object
+      // We are going to delete standard keys from the main data object to create our metadata object
       const meta = Object.assign({}, this.highlightData);
       delete meta.date;
       delete meta.quiz;
@@ -69,7 +79,30 @@ export default {
       // Highlight's news item date
     },
   },
-  methods: {},
+  methods: {
+    async refreshImage(){
+      this.$refs.highlightImage.classList.add('museum-highlight__highlight-image--hidden');
+
+      /*
+
+      try {
+        const newImage = await getNewImage();
+        this.$refs.highlightImage.src = newImage.imageUrl;
+        this.$refs.highlightImage.classList.remove('museum-highlight__highlight-image--hidden');
+      } catch (error) {
+        // Assume this error will be logged to Sentry
+        console.error('MuseumHighlight Refresh Image request error', error);
+        this.$refs.highlightImage.classList.remove('museum-highlight__highlight-image--hidden');
+      }
+
+      */
+
+      // Dummy code to simulate refresh
+      setTimeout(() => {
+        this.$refs.highlightImage.classList.remove('museum-highlight__highlight-image--hidden');
+      }, 500)
+    }
+  },
   created() {
 
   },
@@ -77,17 +110,80 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
+
+.svg-spinner {
+  transform-origin: center;
+  animation: spinner .75s infinite linear
+}
+
+@keyframes spinner {
+  100% {
+    transform: rotate(360deg)
+  }
+}
+
 .museum-highlight {
-  &__image-wrapper {
-    aspect-ratio: 16 / 9;
-    background-color: red;
+
+  position: relative;
+
+  &__spinner {
+    position: absolute;
+    top: calc(50% - 24px);
+    left: calc(50% - 24px);
+    z-index: 0;
   }
 
-  &__image {
+  &__icon {
+    position: absolute;
+    background-color: hsl(240, 4%, 65%);
+    height: 3rem;
+    width: 3rem;
+    right: -0.5rem;
+    top: -0.5rem;
+    z-index: 2;
+  }
+
+  &__image-wrapper {
+    aspect-ratio: 16 / 9;
+    background-color: hsl(240, 4%, 85%);
+    position: relative;
+  }
+
+  &__refresh-image-button {
+    position: absolute;
     display: block;
+    background-color: hsl(250, 84%, 54%);
+    transition: background-color ease-in-out 0.3s;
+    font-size: 0.8em;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.1rem;
+    color: #FFFFFF;
+    bottom: 0.5rem;
+    right: 0.5rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.2rem;
+    border: 1px solid hsl(250, 84%, 67%);
+    z-index: 2;
+
+    &:hover {
+      background-color: hsl(250, 84%, 38%);
+    }
+  }
+
+  &__highlight-image {
+    display: block;
+    position: relative;
     height: 100%;
     width: 100%;
     object-fit: cover;
+    transition: opacity ease-in-out 0.3s;
+    z-index: 1;
+
+    &--hidden {
+      opacity: 0;
+    }
   }
 
   &__content {
