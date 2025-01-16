@@ -10,7 +10,7 @@
       <MuseumHighlight v-for="highlight in spaceHighlights"
                        :key="highlight.id"
                        :highlightData="highlight"
-                       highlightIcon="dinosaur"
+                       highlightIcon="space"
       />
     </div>
 
@@ -102,7 +102,11 @@ export default {
   &__highlights-grid {
     display: grid;
     gap: 16px;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
+
+    @media (min-width: 425px) {
+      grid-template-columns: 1fr 1fr;
+    }
 
     @media (min-width: 768px) {
       grid-template-columns: 1fr 1fr 1fr 1fr;
