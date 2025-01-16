@@ -1,7 +1,7 @@
 <template>
   <div class="partner-highlight">
     <div class="partner-highlight__banner">
-      <h3>{{ partner }}</h3>
+      <h3>{{ partner }} partner</h3>
     </div>
     <!-- Display the available information for the highlight -->
       <HighlightsIcon :icon-label="highlightIcon"/>
