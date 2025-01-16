@@ -39,6 +39,7 @@
 <script>
 
 import HighlightsIcon from "./HighlightsIcon.vue";
+import {getFormattedDate} from "../js/helpers.js";
 export default {
   name: 'MuseumHighlight',
   components: {
@@ -81,16 +82,7 @@ export default {
 
   },
   methods: {
-    getFormattedDate(date){
-        const dateObj = new Date(date);
-
-        const formattedDate = dateObj.toLocaleDateString('en-GB', {
-          day: '2-digit',
-          month: 'short',
-          year: 'numeric',
-        });
-        return formattedDate || '';
-    },
+    getFormattedDate,
     async refreshImage(){
       this.$refs.highlightImage.classList.add('museum-highlight__highlight-image--hidden');
 

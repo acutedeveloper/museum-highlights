@@ -108,7 +108,6 @@ export default {
       * }]
       *
       * We're adding a new 'type' property to allow us to switch components
-      * The partner data I would like to be injected after 2 highlights
       * */
 
       const newHighlightsArray = _.orderBy(this.spaceHighlights, ['date'], ['desc']).map((highlight) => {
@@ -123,20 +122,19 @@ export default {
         const newPartnerObject = {
           type: 'partner', partner, ...this.spacePartners[partner]
         }
+
+        // Cleaning up the keys for easier sorting
+        newPartnerObject.date = newPartnerObject.createdAt
+        delete newPartnerObject.createdAt
+
         return newPartnerObject;
       })
 
-      // Merge the two arrays
-      const combinedDataArray = []
-      newHighlightsArray.forEach((highlight, index) => {
-        combinedDataArray.push(highlight);
-        if (index % 3 && newPartnersArray.length > 0) {
-          combinedDataArray.push(newPartnersArray[0])
-          newPartnersArray.splice(0, 1)
-        }
-      })
+      const combinedDataArray = [...newPartnersArray, ...newHighlightsArray]
 
-      return combinedDataArray;
+      const orderedCombinedDataArray = _.orderBy(combinedDataArray, ['date'], ['desc'])
+
+      return orderedCombinedDataArray;
     }
   },
   methods: {},

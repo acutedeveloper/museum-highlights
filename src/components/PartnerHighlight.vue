@@ -19,6 +19,8 @@
     <div class="partner-highlight__content">
       <h2>{{ name }}</h2>
       <p>{{ info }}</p>
+      <small>Last edited: {{ getFormattedDate(date) }}</small>
+
       <template v-if="Object.keys(metadata).length > 0">
         <div class="spacer-1"></div>
         <h3>Additional Info</h3>
@@ -33,6 +35,7 @@
 <script>
 
 import HighlightsIcon from "./HighlightsIcon.vue";
+import {getFormattedDate} from "../js/helpers.js";
 export default {
   name: 'partnerHighlight',
   components: {
@@ -62,7 +65,7 @@ export default {
     metadata() {
       // We are going to delete standard keys from the main data object to create our metadata object
       const meta = Object.assign({}, this.highlightData);
-      delete meta.createdAt;
+      delete meta.date;
       delete meta.type;
       delete meta.info;
       delete meta.name;
@@ -74,6 +77,7 @@ export default {
 
   },
   methods: {
+    getFormattedDate,
     async refreshImage(){
       this.$refs.highlightImage.classList.add('partner-highlight__highlight-image--hidden');
 
