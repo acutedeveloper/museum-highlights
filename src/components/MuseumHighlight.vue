@@ -1,7 +1,7 @@
 <template>
   <div class="museum-highlight">
     <!-- Display the available information for the highlight -->
-    <div class="museum-highlight__icon"></div>
+      <HighlightsIcon :icon-label="highlightIcon"/>
 
     <div class="museum-highlight__image-wrapper">
       <button class="museum-highlight__refresh-image-button" @click="refreshImage">Refresh image</button>
@@ -16,28 +16,32 @@
     <div class="museum-highlight__content">
       <h2>{{ name }}</h2>
       <p>{{ description }}</p>
+      <template v-if="Object.keys(metadata).length > 0">
+        <div class="spacer-1"></div>
+        <h3>Additional Info</h3>
+        <ul>
+          <li v-for="(value, key) in metadata" :key="key">{{ key }}: {{ value }}</li>
+        </ul>
+      </template>
     </div>
-    <div v-if="news">
-      Latest {{ name }} news
-      <hr>
-      {{ news.date }}
+    <div v-if="news" class="museum-highlight__news-feed">
+      <h3>Latest {{ name }} news</h3>
+      <article>
+        <h4>{{ news.title }}</h4>
+        <p v-if="news.date">Date: {{ news.date}}</p>
+      </article>
     </div>
-    <div v-if="quiz">
-      <hr>
-      Quiz
-    </div>
-    <h3>Data</h3>
-    <ul>
-      <li v-for="(value, key) in metadata" :key="key">{{ key }}: {{ value }}</li>
-    </ul>
-
   </div>
 </template>
 
 <script>
+
+import HighlightsIcon from "./HighlightsIcon.vue";
 export default {
   name: 'MuseumHighlight',
-  components: {},
+  components: {
+    HighlightsIcon
+  },
   mixins: [],
   props: {
     highlightData: Object,
@@ -59,14 +63,10 @@ export default {
     news() {
       return this.highlightData.news || '';
     },
-    quiz() {
-      return this.highlightData.quiz || '';
-    },
     metadata() {
       // We are going to delete standard keys from the main data object to create our metadata object
       const meta = Object.assign({}, this.highlightData);
       delete meta.date;
-      delete meta.quiz;
       delete meta.name;
       delete meta.description;
       delete meta.news;
@@ -75,9 +75,7 @@ export default {
 
       return meta;
     },
-    newsDate() {
-      // Highlight's news item date
-    },
+
   },
   methods: {
     async refreshImage(){
@@ -87,6 +85,9 @@ export default {
 
       try {
         const newImage = await getNewImage();
+
+        // Assuming that the data returned from getNewImage contains a key 'imageUrl'
+
         this.$refs.highlightImage.src = newImage.imageUrl;
         this.$refs.highlightImage.classList.remove('museum-highlight__highlight-image--hidden');
       } catch (error) {
@@ -99,6 +100,7 @@ export default {
 
       // Dummy code to simulate refresh
       setTimeout(() => {
+        this.$refs.highlightImage.src = "https://picsum.photos/600/500";
         this.$refs.highlightImage.classList.remove('museum-highlight__highlight-image--hidden');
       }, 500)
     }
@@ -111,6 +113,9 @@ export default {
 
 <style lang="scss" scoped>
 
+.spacer-1 {
+  height: 1rem;
+}
 
 .svg-spinner {
   transform-origin: center;
@@ -127,6 +132,15 @@ export default {
 
   position: relative;
 
+  h3 {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    border-top: 2px solid #EEEEEE;
+    padding-top: 0.5rem;
+  }
+
   &__spinner {
     position: absolute;
     top: calc(50% - 24px);
@@ -136,12 +150,12 @@ export default {
 
   &__icon {
     position: absolute;
-    background-color: hsl(240, 4%, 65%);
     height: 3rem;
     width: 3rem;
     right: -0.5rem;
     top: -0.5rem;
     z-index: 2;
+    color: yellow;
   }
 
   &__image-wrapper {
@@ -188,10 +202,16 @@ export default {
 
   &__content {
 
+    margin-bottom: 1rem;
+
     h2 {
       font-size: 1.5rem;
       font-weight: bold;
     }
+  }
+
+  &__news-feed {
+
   }
 }
 </style>

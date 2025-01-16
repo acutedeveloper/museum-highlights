@@ -10,6 +10,7 @@
       <MuseumHighlight v-for="highlight in spaceHighlights"
                        :key="highlight.id"
                        :highlightData="highlight"
+                       highlightIcon="dinosaur"
       />
     </div>
 
@@ -64,8 +65,7 @@ export default {
           name: 'Meteor showers',
           news: {
             title: 'The Lyrids will peak at on April 21-22 2021, at night',
-          },
-          species: 'hippotomus'
+          }
         },
       ],
       spacePartners: {
