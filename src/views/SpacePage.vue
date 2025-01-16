@@ -7,11 +7,20 @@
 
     <!-- Add the museum highlight cards based on the data provided below -->
     <div class="space-page__highlights-grid">
-      <MuseumHighlight v-for="highlight in spaceHighlights"
-                       :key="highlight.id"
-                       :highlightData="highlight"
-                       highlightIcon="space"
-      />
+      <div v-for="highlight in getHighlightsAndPartnersData"
+                :key="highlight.name">
+              <MuseumHighlight
+                  v-if="highlight.type === 'highlight'"
+                :highlightData="highlight"
+                highlightIcon="space"
+              />
+              <PartnerHighlight
+                v-if="highlight.type === 'partner'"
+                :highlightData="highlight"
+                highlightIcon="space"
+                />
+      </div>
+
     </div>
 
   </div>
@@ -20,10 +29,13 @@
 <script>
 
 import MuseumHighlight from "../components/MuseumHighlight.vue";
+import _ from "lodash";
+import PartnerHighlight from "../components/PartnerHighlight.vue";
 
 export default {
   name: 'SpacePage',
   components: {
+    PartnerHighlight,
     MuseumHighlight,
   },
   mixins: [],
@@ -80,6 +92,52 @@ export default {
   },
   computed: {
     // Merge data and partners API
+    getHighlightsAndPartnersData() {
+
+      /*
+      * We are going to merge the highlights and partners data arrays
+      *
+      * The final output I would like is:
+      *
+      * [{
+      *   type: highlight,
+      *   data: {...highlight data}
+      * },{
+      *   type: partner,
+      *   data: {...partner data}
+      * }]
+      *
+      * We're adding a new 'type' property to allow us to switch components
+      * The partner data I would like to be injected after 2 highlights
+      * */
+
+      const newHighlightsArray = _.orderBy(this.spaceHighlights, ['date'], ['desc']).map((highlight) => {
+        const objectWithType = {
+          type: 'highlight', ...highlight
+        }
+        return objectWithType;
+      })
+
+      const partnersKeysArray = Object.keys(this.spacePartners);
+      const newPartnersArray = partnersKeysArray.map((partner) => {
+        const newPartnerObject = {
+          type: 'partner', partner, ...this.spacePartners[partner]
+        }
+        return newPartnerObject;
+      })
+
+      // Merge the two arrays
+      const combinedDataArray = []
+      newHighlightsArray.forEach((highlight, index) => {
+        combinedDataArray.push(highlight);
+        if (index % 3 && newPartnersArray.length > 0) {
+          combinedDataArray.push(newPartnersArray[0])
+          newPartnersArray.splice(0, 1)
+        }
+      })
+
+      return combinedDataArray;
+    }
   },
   methods: {},
   created() {

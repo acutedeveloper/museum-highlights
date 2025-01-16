@@ -16,6 +16,8 @@
     <div class="museum-highlight__content">
       <h2>{{ name }}</h2>
       <p>{{ description }}</p>
+      <div class="spacer-1"></div>
+      <small>Last edited: {{ getFormattedDate(date) }}</small>
       <template v-if="Object.keys(metadata).length > 0">
         <div class="spacer-1"></div>
         <h3>Additional Info</h3>
@@ -28,7 +30,7 @@
       <h3>Latest {{ name }} news</h3>
       <article>
         <h4>{{ news.title }}</h4>
-        <p v-if="news.date">Date: {{ news.date}}</p>
+        <p v-if="news.date">Date: {{ getFormattedDate(news.date) }}</p>
       </article>
     </div>
   </div>
@@ -67,6 +69,7 @@ export default {
       // We are going to delete standard keys from the main data object to create our metadata object
       const meta = Object.assign({}, this.highlightData);
       delete meta.date;
+      delete meta.type;
       delete meta.name;
       delete meta.description;
       delete meta.news;
@@ -78,6 +81,16 @@ export default {
 
   },
   methods: {
+    getFormattedDate(date){
+        const dateObj = new Date(date);
+
+        const formattedDate = dateObj.toLocaleDateString('en-GB', {
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric',
+        });
+        return formattedDate || '';
+    },
     async refreshImage(){
       this.$refs.highlightImage.classList.add('museum-highlight__highlight-image--hidden');
 
