@@ -7,7 +7,7 @@
 
     <!-- Add the museum highlight cards based on the data provided below -->
     <div class="space-page__highlights-grid">
-      <div v-for="highlight in getHighlightsAndPartnersData"
+      <template v-for="highlight in getHighlightsAndPartnersData"
                 :key="highlight.name">
               <MuseumHighlight
                   v-if="highlight.type === 'highlight'"
@@ -19,7 +19,7 @@
                 :highlightData="highlight"
                 highlightIcon="space"
                 />
-      </div>
+      </template>
 
     </div>
 
@@ -153,6 +153,7 @@ export default {
     color: #2c3791;
     font-size: 24px;
     font-weight: 600;
+    margin-bottom: 2rem;
   }
 
   &__highlights-grid {
